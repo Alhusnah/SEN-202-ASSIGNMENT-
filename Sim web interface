@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIM &mdash; Security Incident Mapping</title>
+<style>
+  :root{
+    --bg:#12181f;
+    --bg-panel:#1a222c;
+    --bg-panel-2:#212b37;
+    --line:#2b3641;
+    --text:#e9edf1;
+    --text-dim:#8d99a6;
+    --amber:#e8a23d;
+    --amber-dim:#7a5a26;
+    --red:#c0392b;
+    --teal:#3f9c8f;
+    --mono: ui-monospace, "SF Mono", "Cascadia Code", Consolas, monospace;
+    --sans: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:var(--sans); line-height:1.5;
+  }
+  a{color:var(--amber);}
+
+  header{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:18px 28px; border-bottom:1px solid var(--line);
+    background:linear-gradient(180deg, #151d26, #12181f);
+    position:sticky; top:0; z-index:10;
+  }
+  .brand{display:flex; align-items:center; gap:12px;}
+  .brand .dot{
+    width:12px; height:12px; border-radius:50%; background:var(--amber);
+    box-shadow:0 0 0 0 rgba(232,162,61,.6);
+    animation:ping 2.2s infinite;
+  }
+  @keyframes ping{
+    0%{box-shadow:0 0 0 0 rgba(232,162,61,.55);}
+    70%{box-shadow:0 0 0 10px rgba(232,162,61,0);}
+    100%{box-shadow:0 0 0 0 rgba(232,162,61,0);}
+  }
+  .brand h1{font-size:18px; margin:0; letter-spacing:0.5px;}
+  .brand .tag{font-size:11px; color:var(--text-dim); font-family:var(--mono); letter-spacing:1px;}
+  .stat-strip{display:flex; gap:22px; font-family:var(--mono); font-size:12px; color:var(--text-dim);}
+  .stat-strip b{color:var(--text); font-size:15px; display:block; font-family:var(--sans);}
+
+  main{
+    display:grid; grid-template-columns:380px 1fr; gap:0;
+    min-height:calc(100vh - 66px);
+  }
+  @media (max-width: 860px){ main{grid-template-columns:1fr;} }
+
+  .panel{padding:26px; border-right:1px solid var(--line);}
+  @media (max-width: 860px){ .panel{border-right:none; border-bottom:1px solid var(--line);} }
+
+  .panel h2{font-size:14px; text-transform:uppercase; letter-spacing:1.5px; color:var(--text-dim); margin:0 0 18px;}
+
+  label{display:block; font-size:12.5px; color:var(--text-dim); margin:14px 0 6px;}
+  label:first-of-type{margin-top:0;}
+  select, textarea, input[type=text]{
+    width:100%; background:var(--bg-panel-2); border:1px solid var(--line); color:var(--text);
+    padding:10px 12px; border-radius:6px; font-family:var(--sans); font-size:14px;
+  }
+  select:focus, textarea:focus, input:focus{outline:2px solid var(--amber); outline-offset:1px;}
+  textarea{resize:vertical; min-height:80px;}
+
+  .severity-row{display:flex; gap:8px; margin-top:6px;}
+  .sev-btn{
+    flex:1; text-align:center; padding:8px 4px; border-radius:6px; cursor:pointer;
+    border:1px solid var(--line); font-size:12px; color:var(--text-dim); background:var(--bg-panel-2);
+  }
+  .sev-btn.active[data-sev="low"]{border-color:var(--teal); color:var(--teal); background:#16302c;}
+  .sev-btn.active[data-sev="medium"]{border-color:var(--amber); color:var(--amber); background:#332711;}
+  .sev-btn.active[data-sev="high"]{border-color:var(--red); color:#ff8a7a; background:#331615;}
+
+  .anon-row{display:flex; align-items:center; gap:8px; margin-top:14px; font-size:13px; color:var(--text-dim);}
+
+  .submit-btn{
+    margin-top:20px; width:100%; padding:12px; border:none; border-radius:6px;
+    background:var(--amber); color:#1a1305; font-weight:700; font-size:14px; cursor:pointer;
+    letter-spacing:0.3px;
+  }
+  .submit-btn:hover{background:#f0af57;}
+
+  .feed{padding:26px;}
+  .feed-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;}
+  .filter-row{display:flex; gap:8px;}
+  .filter-chip{
+    font-size:12px; padding:6px 12px; border-radius:20px; border:1px solid var(--line);
+    color:var(--text-dim); cursor:pointer; background:transparent;
+  }
+  .filter-chip.active{background:var(--amber-dim); color:#ffe3ba; border-color:var(--amber);}
+
+  .incident{
+    border:1px solid var(--line); border-radius:8px; padding:16px 18px; margin-bottom:12px;
+    background:var(--bg-panel); position:relative; border-left:3px solid var(--line);
+  }
+  .incident.sev-low{border-left-color:var(--teal);}
+  .incident.sev-medium{border-left-color:var(--amber);}
+  .incident.sev-high{border-left-color:var(--red);}
+
+  .incident-top{display:flex; justify-content:space-between; align-items:baseline; gap:10px;}
+  .incident-type{font-weight:700; font-size:14.5px;}
+  .incident-id{font-family:var(--mono); font-size:11px; color:var(--text-dim);}
+  .incident-meta{font-size:12px; color:var(--text-dim); margin-top:4px; font-family:var(--mono);}
+  .incident-desc{margin-top:10px; font-size:13.5px; color:#cfd8e0;}
+  .incident-foot{margin-top:10px; display:flex; justify-content:space-between; align-items:center;}
+  .status-pill{
+    font-size:11px; padding:4px 10px; border-radius:20px; font-family:var(--mono);
+    border:1px solid var(--line); color:var(--text-dim); cursor:pointer; background:var(--bg-panel-2);
+  }
+  .status-pill.resolved{color:var(--teal); border-color:var(--teal);}
+
+  .empty{color:var(--text-dim); font-size:13px; text-align:center; padding:40px 0; border:1px dashed var(--line); border-radius:8px;}
+
+  footer{padding:16px 28px; border-top:1px solid var(--line); color:var(--text-dim); font-size:11.5px; font-family:var(--mono);}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <span class="dot"></span>
+    <div>
+      <h1>SIM</h1>
+      <div class="tag">SECURITY INCIDENT MAPPING &mdash; CAMPUS</div>
+    </div>
+  </div>
+  <div class="stat-strip">
+    <div><b id="statTotal">0</b>reports logged</div>
+    <div><b id="statOpen">0</b>unresolved</div>
+    <div><b id="statHigh">0</b>high severity</div>
+  </div>
+</header>
+
+<main>
+  <section class="panel">
+    <h2>Report an incident</h2>
+    <form id="reportForm">
+      <label for="type">Incident type</label>
+      <select id="type" required>
+        <option value="">Select type&hellip;</option>
+        <option>Theft / Stealing</option>
+        <option>Stabbing / Assault</option>
+        <option>Rape / Sexual Assault</option>
+        <option>Murder</option>
+        <option>Burglary (Hostel/Lodge)</option>
+        <option>Suspicious Person/Activity</option>
+        <option>Other</option>
+      </select>
+
+      <label for="location">Location on/around campus</label>
+      <input type="text" id="location" placeholder="e.g. Behind Faculty of Computing, Peace Hostel" required>
+
+      <label>Severity</label>
+      <div class="severity-row" id="sevRow">
+        <div class="sev-btn" data-sev="low">Low</div>
+        <div class="sev-btn active" data-sev="medium">Medium</div>
+        <div class="sev-btn" data-sev="high">High</div>
+      </div>
+
+      <label for="desc">Description</label>
+      <textarea id="desc" placeholder="What happened? When? Any details that help responders." required></textarea>
+
+      <div class="anon-row">
+        <input type="checkbox" id="anon" checked>
+        <label for="anon" style="margin:0;">Report anonymously (recommended)</label>
+      </div>
+
+      <button type="submit" class="submit-btn">Submit report</button>
+    </form>
+  </section>
+
+  <section class="feed">
+    <div class="feed-head">
+      <h2 style="margin:0;">Incident feed</h2>
+      <div class="filter-row" id="filterRow">
+        <button class="filter-chip active" data-f="all">All</button>
+        <button class="filter-chip" data-f="open">Unresolved</button>
+        <button class="filter-chip" data-f="high">High severity</button>
+      </div>
+    </div>
+    <div id="incidentList"></div>
+  </section>
+</main>
+
+<footer>SIM PROTOTYPE &mdash; DEMO DATA STORED LOCALLY IN THIS BROWSER ONLY. NOT CONNECTED TO CAMPUS SECURITY.</footer>
+
+<script>
+  const KEY = "sim_incidents_v1";
+  let incidents = JSON.parse(localStorage.getItem(KEY) || "null");
+
+  if (!incidents) {
+    incidents = [
+      {id:"SIM-1001", type:"Theft / Stealing", location:"Faculty of Computing car park", severity:"medium",
+       desc:"Laptop bag stolen from unattended reading room around 2pm.", anon:true, status:"open",
+       ts: Date.now() - 1000*60*60*5},
+      {id:"SIM-1002", type:"Suspicious Person/Activity", location:"Back gate, near fence", severity:"low",
+       desc:"Unknown individual loitering near back fence late at night for two nights running.", anon:true, status:"resolved",
+       ts: Date.now() - 1000*60*60*30},
+      {id:"SIM-1003", type:"Burglary (Hostel/Lodge)", location:"Peace Lodge, off-campus", severity:"high",
+       desc:"Room forced open while occupants were at lectures; valuables missing.", anon:false, status:"open",
+       ts: Date.now() - 1000*60*60*2},
+    ];
+    save();
+  }
+
+  let selectedSev = "medium";
+  let activeFilter = "all";
+
+  document.getElementById("sevRow").addEventListener("click", e=>{
+    const btn = e.target.closest(".sev-btn");
+    if(!btn) return;
+    document.querySelectorAll(".sev-btn").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    selectedSev = btn.dataset.sev;
+  });
+
+  document.getElementById("filterRow").addEventListener("click", e=>{
+    const btn = e.target.closest(".filter-chip");
+    if(!btn) return;
+    document.querySelectorAll(".filter-chip").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    activeFilter = btn.dataset.f;
+    render();
+  });
+
+  document.getElementById("reportForm").addEventListener("submit", e=>{
+    e.preventDefault();
+    const type = document.getElementById("type").value;
+    const location = document.getElementById("location").value.trim();
+    const desc = document.getElementById("desc").value.trim();
+    const anon = document.getElementById("anon").checked;
+    if(!type || !location || !desc) return;
+
+    const id = "SIM-" + (1000 + incidents.length + 1);
+    incidents.unshift({id, type, location, severity:selectedSev, desc, anon, status:"open", ts:Date.now()});
+    save();
+    render();
+    e.target.reset();
+    document.querySelectorAll(".sev-btn").forEach(b=>b.classList.remove("active"));
+    document.querySelector('.sev-btn[data-sev="medium"]').classList.add("active");
+    selectedSev = "medium";
+    document.getElementById("anon").checked = true;
+  });
+
+  function toggleStatus(id){
+    const inc = incidents.find(i=>i.id===id);
+    if(!inc) return;
+    inc.status = inc.status === "open" ? "resolved" : "open";
+    save();
+    render();
+  }
+
+  function timeAgo(ts){
+    const mins = Math.floor((Date.now()-ts)/60000);
+    if(mins < 60) return mins + "m ago";
+    const hrs = Math.floor(mins/60);
+    if(hrs < 24) return hrs + "h ago";
+    return Math.floor(hrs/24) + "d ago";
+  }
+
+  function save(){ localStorage.setItem(KEY, JSON.stringify(incidents)); }
+
+  function render(){
+    const list = document.getElementById("incidentList");
+    let filtered = incidents;
+    if(activeFilter === "open") filtered = incidents.filter(i=>i.status==="open");
+    if(activeFilter === "high") filtered = incidents.filter(i=>i.severity==="high");
+
+    document.getElementById("statTotal").textContent = incidents.length;
+    document.getElementById("statOpen").textContent = incidents.filter(i=>i.status==="open").length;
+    document.getElementById("statHigh").textContent = incidents.filter(i=>i.severity==="high").length;
+
+    if(filtered.length === 0){
+      list.innerHTML = '<div class="empty">No incidents match this filter.</div>';
+      return;
+    }
+
+    list.innerHTML = filtered.map(i => `
+      <div class="incident sev-${i.severity}">
+        <div class="incident-top">
+          <span class="incident-type">${i.type}</span>
+          <span class="incident-id">${i.id}</span>
+        </div>
+        <div class="incident-meta">${i.location} &middot; ${timeAgo(i.ts)} &middot; ${i.anon ? "anonymous" : "identified"} &middot; ${i.severity} severity</div>
+        <div class="incident-desc">${i.desc}</div>
+        <div class="incident-foot">
+          <span class="status-pill ${i.status==='resolved'?'resolved':''}" onclick="toggleStatus('${i.id}')">
+            ${i.status === "resolved" ? "&#10003; resolved" : "&#9679; open &mdash; mark resolved"}
+          </span>
+        </div>
+      </div>
+    `).join("");
+  }
+
+  render();
+</script>
+</body>
+</html>
