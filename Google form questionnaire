@@ -1,0 +1,97 @@
+# SIM Pre-Design Questionnaire (for Google Forms)
+
+**Purpose:** Gather input from students, staff, and landlords/villa mates on campus
+security incidents and reporting preferences, to inform the design of the SIM
+(Security Incident Mapping) platform.
+
+Copy each section below into Google Forms. Use the "Section" feature so each
+respondent only sees the section relevant to their role.
+
+---
+
+## Section 0 — Respondent Type
+*(Add this as the first question, using "Go to section based on answer")*
+
+1. **Which best describes you?** *(Multiple choice, required)*
+   - Student (living on campus)
+   - Student (living off campus)
+   - Staff (academic or non-academic)
+   - Landlord / Property Manager (off-campus lodging)
+
+---
+
+## Section 1 — Students (on & off campus)
+
+2. Where do you currently reside? *(Short answer)*
+3. Have you ever witnessed or experienced a security incident on or around campus?
+   *(Multiple choice: Yes / No / Prefer not to say)*
+4. If yes, what type of incident was it? *(Checkboxes, allow "Other")*
+   - Theft / Stealing
+   - Stabbing / Assault
+   - Rape / Sexual Assault
+   - Burglary
+   - Suspicious activity
+   - Other: ______
+5. Did you report the incident to anyone (security, hostel warden, police)?
+   *(Multiple choice: Yes / No)*
+6. If you did not report it, why not? *(Checkboxes)*
+   - Didn't know who to contact
+   - Too slow / inconvenient
+   - Feared retaliation or exposure
+   - Didn't think it would be acted on
+   - Other: ______
+7. Would you use a mobile/web app to report incidents anonymously?
+   *(Linear scale 1 = Definitely not, 5 = Definitely yes)*
+8. What information would you want to see on an incident map? *(Checkboxes)*
+   - Location of recent incidents
+   - Incident type/severity
+   - Whether it's been resolved
+   - Safety tips for the area
+9. Any additional comments or suggestions? *(Paragraph, optional)*
+
+---
+
+## Section 2 — Staff
+
+2. What is your role? *(Short answer, e.g. lecturer, admin staff, security)*
+3. Have you observed or been informed of recurring security issues around campus?
+   *(Multiple choice: Yes / No)*
+4. Which locations do you consider highest risk? *(Short answer)*
+5. Would a centralized incident reporting/mapping tool help your unit respond faster?
+   *(Linear scale 1 = Not at all, 5 = Very much)*
+6. What features would be most useful to you as staff? *(Checkboxes)*
+   - Real-time incident alerts
+   - Ability to verify/update incident status
+   - Statistics/reports for administration
+   - Direct link to security response team
+7. Any additional comments? *(Paragraph, optional)*
+
+---
+
+## Section 3 — Landlords / Property Managers (off-campus lodging)
+
+2. How many students currently live in your property/properties? *(Short answer)*
+3. Have there been any security incidents at your property in the last year?
+   *(Multiple choice: Yes / No / Not sure)*
+4. If yes, what type? *(Checkboxes, allow "Other")*
+5. What security measures do you currently have in place? *(Checkboxes)*
+   - Fencing/gate
+   - Security guard
+   - Lighting
+   - CCTV
+   - None currently
+6. Would you be willing to receive alerts about incidents reported near your property?
+   *(Multiple choice: Yes / No)*
+7. Would you support your tenants using an app to report incidents that occur at
+   your property? *(Multiple choice: Yes / No / Not sure)*
+8. Any additional comments? *(Paragraph, optional)*
+
+---
+
+### Setup notes for Google Forms
+- Enable "Collect email addresses" only if you need follow-up; otherwise keep
+  anonymous to encourage honest responses about crime.
+- Use **Sections** (the "Add section" icon) to branch by respondent type from
+  Question 1, via **"Go to section based on answer."**
+- Set the form to **accept responses without sign-in** so landlords/staff without
+  a campus email can respond.
